@@ -27,13 +27,16 @@ void setup() {
   attachInterrupt(1, updateEncoder, CHANGE);
   
   lcd.begin(16, 2);
-  lcd.print("Encoder Value: ");
+  lcd.clear();
 }
 
 void loop() {
-  lcd.setCursor(0, 1);
-  lcd.print(encoderValue);
-  Serial.println(encoderValue);
+  lcd.setCursor(0,0); // Sets the cursor to col 0 and row 0
+  lcd.print("EncoderValue: "); // Prints Sensor Val: to LCD
+  lcd.print(encoderValue); // Prints value on Potpin1 to LCD
+  lcd.setCursor(0,1); // Sets the cursor to col 1 and row 0
+  lcd.print("KeyPadValue: "); // Prints Sensor Val: to LCD
+  lcd.print(encoderValue); // Prints value on Potpin1 to LCD
   delay(1000);
 }
 
