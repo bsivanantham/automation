@@ -74,7 +74,7 @@ void get_ph_val(){
     Serial.print(voltage,2);
     Serial.print(" pH value: ");
     Serial.println(pHValue,2);
-    Firebase.setFloat ("PHValue", pHValue);
+    Firebase.setFloat ("/devices/12334/pH", pHValue);
     printTime=millis();
   }  
 }
@@ -91,7 +91,7 @@ void get_do_val(){
   Serial.println(abs(volt_new));
   Serial.print("\t Raw Do2 value is : ");
   Serial.println(abs(do_volt));
-  Firebase.setFloat ("DOValue", volt_new);
+  Firebase.setFloat ("/devices/12334/do", volt_new);
   delay(1000);
 }
 
