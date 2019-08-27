@@ -87,7 +87,10 @@ void get_do_val(){
   Serial.println(abs(volt_new));
   Serial.print("\t Raw Do2 value is : ");
   Serial.println(abs(do_volt));
-  Firebase.setFloat ("/devices/12334/do", volt_new);
+  if(volt_new > 0)
+  {
+    Firebase.setFloat ("/devices/12334/do", volt_new);
+  }
   delay(100);
 }
 
