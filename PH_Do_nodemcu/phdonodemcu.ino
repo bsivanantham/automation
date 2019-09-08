@@ -70,7 +70,14 @@ void get_ph_val(){
     Serial.print("Voltage value ="); Serial.println(voltage);
     Serial.print(" pH value: ");
     Serial.println(pHValue,2);
-    Firebase.setFloat ("/devices/12334/pH", pHValue);
+    if(pHValue > 0 && pHValue< 14)
+    {
+      Firebase.setFloat ("/devices/12334/pH", pHValue);
+    }
+    else
+    {
+      Firebase.setString("/devices/12334/pH", "calibrating...");
+    }
     printTime=millis();
   }  
 }
@@ -90,6 +97,9 @@ void get_do_val(){
   if(volt_new > 0)
   {
     Firebase.setFloat ("/devices/12334/do", volt_new);
+  }
+  {
+    Firebase.setString("/devices/12334/dp", "calibrating...");
   }
   delay(100);
 }
