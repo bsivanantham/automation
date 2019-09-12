@@ -10,9 +10,9 @@
 
 #define FIREBASE_HOST "ldr-value.firebaseio.com"
 #define WIFI_SSID "Robic Rufarm"
-#define WIFI_PASSWORD "Robicruf@rm12345"
+#define WIFI_PASSWORD "Rr@201920"
 
-Adafruit_ADS1115 ads;
+Adafruit_ADS1115 ads(0x48);
 
 const float multiplier = 0.0001875F;
 float read_do_zero;
@@ -35,7 +35,7 @@ void setup()
   while (WiFi.status() != WL_CONNECTED)
   {
     Serial.print(".");
-    delay(500);
+    delay(1000);
   }
   Serial.println();
   Serial.print("connected: ");
@@ -63,18 +63,21 @@ void get_ph_val(){
   static unsigned long printTime = millis();
   static float pHValue,voltage;
   if(millis()-samplingTime > samplingInterval){
-    pHArray[pHArrayIndex++]=ads.readADC_SingleEnded(2) * multiplier;
+    pHArray[pHArrayIndex++]=ads.readADC_SingleEnded(0);
     if(pHArrayIndex==ArrayLenth)pHArrayIndex=0;
-    voltage = avergearray(pHArray, ArrayLenth)*5.0/1024;
-    pHValue = 3.5*voltage+Offset;
-    samplingTime=millis();
-  }
-  if(millis() - printTime > printInterval){ //Every 800 milliseconds, print a numerical, convert the state of the LED indicato
-    Serial.print("Voltage:");
-    Serial.print(voltage,2);
+    voltage = (avergearray(pHArray, ArrayLenth)*0.1875)/1000;
+    pHValue = (12.571429 * voltage) - 17.571429;
+    Serial.print("Voltage value ="); Serial.println(voltage);
     Serial.print(" pH value: ");
     Serial.println(pHValue,2);
-    Firebase.setFloat ("/devices/12334/pH", pHValue);
+    if(pHValue > 0 && pHValue< 14)
+    {
+      Firebase.setFloat ("/devices/12334/pH", pHValue);
+    }
+    else
+    {
+      Firebase.setString("/devices/12334/pH", "calibrating...");
+    }
     printTime=millis();
   }  
 }
@@ -91,14 +94,21 @@ void get_do_val(){
   Serial.println(abs(volt_new));
   Serial.print("\t Raw Do2 value is : ");
   Serial.println(abs(do_volt));
-  Firebase.setFloat ("/devices/12334/do", volt_new);
-  delay(1000);
+  if(volt_new > 0)
+  {
+    Firebase.setFloat ("/devices/12334/do", volt_new);
+  }
+  else
+  {
+    Firebase.setString("/devices/12334/dp", "calibrating...");
+  }
+  delay(100);
 }
 
 void calibrate_do(){
   read_do_zero = 0.21 ;
   read_do_air =  1.19;
-  delay(1000);
+  delay(100);
   get_do_val();
 }
 
