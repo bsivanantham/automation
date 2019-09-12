@@ -98,6 +98,7 @@ void get_do_val(){
   {
     Firebase.setFloat ("/devices/12334/do", volt_new);
   }
+  else
   {
     Firebase.setString("/devices/12334/dp", "calibrating...");
   }
